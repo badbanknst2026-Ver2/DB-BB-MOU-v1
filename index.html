@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#064e3b">
+  <title>Executive Dashboard | ผลการดำเนินงานบริหารจัดการหนี้</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <style>
+    :root{--ink:#15352b;--muted:#71847c;--green:#087b55;--green-dark:#064e3b;--green-light:#e4f6ed;--lime:#a7d948;--blue:#3976d2;--orange:#f0a33a;--red:#d85b53;--line:#e4ece7;--bg:#f4f8f6;--white:#fff;--shadow:0 12px 32px rgba(19,63,45,.07);--radius:18px}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 'Sarabun',Tahoma,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #86d4ad;outline-offset:2px}.wrap{width:min(1480px,100%);margin:auto;padding:0 24px}
+    .hero{background:radial-gradient(circle at 85% 12%,#68be6650 0,transparent 28%),linear-gradient(112deg,#063f32,#087b55 68%,#5cae4b);color:white;padding:25px 0 78px}.hero-row{display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:15px}.brand-mark{width:53px;height:53px;border-radius:17px;background:#ffffff20;display:grid;place-items:center;font-size:26px}.brand h1{font-size:clamp(20px,2.4vw,30px);line-height:1.2;margin:0;font-weight:700}.brand p{margin:6px 0 0;color:#d9f4e7;font-size:13px}.actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .15s,filter .15s}.btn:hover{filter:brightness(.97);transform:translateY(-1px)}.btn-light{background:#fff;color:var(--green-dark)}.btn-main{background:var(--green);color:white}.btn-soft{background:var(--green-light);color:var(--green-dark)}.btn-plain{background:white;border:1px solid var(--line);color:var(--muted)}.btn:disabled{opacity:.55;cursor:not-allowed}
+    main{margin-top:-51px;padding-bottom:38px}.toolbar,.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.toolbar{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap;padding:16px 19px;margin-bottom:16px}.filters{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.field label{display:block;color:var(--muted);font-size:12px;font-weight:700;margin-bottom:5px}.field select,.field input{min-width:170px;height:42px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:7px 11px;color:var(--ink)}.statusline{font-size:12px;color:var(--muted);text-align:right}
+    .tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 10px;margin-bottom:8px}.tab{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 16px;color:var(--muted);font-weight:700;white-space:nowrap}.tab.active{background:var(--green-dark);color:#fff;border-color:var(--green-dark)}.section{display:none}.section.active{display:block}.section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:17px 2px 12px}.section-title h2{margin:0;font-size:20px;color:var(--green-dark)}.section-title p{margin:3px 0 0;color:var(--muted);font-size:12px}
+    .grid{display:grid;gap:14px;margin-bottom:14px}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:18px;min-width:0}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.card h3{margin:0;font-size:15px;color:var(--green-dark)}.card-sub{font-size:12px;color:var(--muted);margin:4px 0 0}.metric{position:relative;overflow:hidden;padding:18px}.metric:after{content:"";position:absolute;right:-25px;top:-30px;width:86px;height:86px;border-radius:50%;background:#e8f7ed}.metric-label{font-size:12px;color:var(--muted);position:relative;z-index:1}.metric-value{font-size:28px;line-height:1.2;color:var(--green-dark);font-weight:700;margin:5px 0;position:relative;z-index:1}.metric-note{font-size:11px;color:var(--muted);position:relative;z-index:1}.chip{display:inline-flex;padding:3px 9px;border-radius:99px;background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;white-space:nowrap}.chip.warn{background:#fff3dd;color:#94620c}.chip.bad{background:#fff0ee;color:#aa3029}
+    .chart-box{position:relative;height:315px;width:100%}.chart-box.tall{height:365px}.chart-box.small{height:250px}.scroll{overflow:auto;max-height:430px;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}th{position:sticky;top:0;background:#e8f5ed;color:var(--green-dark);text-align:left;padding:10px;z-index:1}td{padding:9px 10px;border-top:1px solid #edf2ef}tbody tr:hover{background:#f8fcf9}.num{text-align:right;font-variant-numeric:tabular-nums}.rank{font-weight:700;color:var(--green)}.empty{text-align:center!important;padding:25px!important;color:var(--muted);white-space:normal}.table-note{font-size:11px;color:var(--muted);margin:9px 0 0}
+    .heat{font-weight:700;text-align:center;border-radius:8px;padding:4px 8px;display:inline-block;min-width:36px}.heat-1{background:#fff0ee;color:#ad3930}.heat-2{background:#fff4df;color:#98630c}.heat-3{background:#eef6e2;color:#63841d}.heat-4,.heat-5{background:#e2f5e9;color:#087b55}
+    .insight{border:1px solid #cce9d8;background:linear-gradient(110deg,#edf9f2,#fbfdf8);border-left:4px solid var(--green);border-radius:13px;padding:15px 17px;color:#355c49;margin-bottom:14px}.insight strong{color:var(--green-dark)}.action-list{display:grid;gap:10px;counter-reset:action}.action{counter-increment:action;display:flex;gap:13px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff}.action:before{content:counter(action,decimal-leading-zero);font-weight:700;color:var(--green);font-size:15px}.action strong{display:block;color:var(--green-dark);margin-bottom:3px}.action span{color:var(--muted);font-size:12px}
+    .callout{border:1px solid #f1dfb8;background:#fff9ec;color:#71551c;border-radius:12px;padding:12px 14px;font-size:12px;margin-bottom:14px}.footer{color:var(--muted);font-size:11px;padding:14px 2px 5px}.modal{position:fixed;inset:0;background:#10291fc2;z-index:5;display:none;align-items:center;justify-content:center;padding:16px}.modal.open{display:flex}.modal-box{background:white;border-radius:18px;width:min(560px,100%);max-height:92vh;overflow:auto;padding:22px;box-shadow:0 25px 80px #001c1166}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-head h2{margin:0;color:var(--green-dark);font-size:20px}.modal .field{margin:12px 0}.modal .field input{width:100%}.message{font-size:12px;min-height:20px;color:#b42318}.notice{font-size:12px;color:var(--muted);background:#f6faf7;border-radius:10px;padding:11px 12px;margin:12px 0}.hidden{display:none!important}.filelist{font-size:12px;color:var(--green-dark);margin:8px 0}.right-actions{display:flex;gap:8px;flex-wrap:wrap}
+    @media(max-width:980px){.grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-row{align-items:flex-start;flex-direction:column}.actions{justify-content:flex-start}.statusline{text-align:left}}
+    @media(max-width:620px){.wrap{padding:0 13px}.hero{padding:19px 0 70px}.brand-mark{width:43px;height:43px}.brand h1{font-size:20px}.actions{width:100%}.actions .btn{flex:1}.toolbar{padding:13px}.filters{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.field select,.field input{min-width:0;width:100%}.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}.metric-value{font-size:25px}.chart-box{height:290px}.chart-box.tall{height:330px}.section-title{align-items:flex-start;flex-direction:column}.card{padding:14px}.tab{padding:9px 12px}}
+    @media print{body{background:#fff}.hero{padding:14px 0 18px}.hero .actions,.toolbar,.tabs,.no-print{display:none!important}main{margin:0}.section{display:none!important}#section-overview{display:block!important}.card,.toolbar{box-shadow:none;break-inside:avoid}.grid{gap:7px}.chart-box{height:240px}.wrap{width:100%;padding:0 8px}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-row">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <div><h1>Executive Dashboard<br>บริหารจัดการหนี้ | เขตนครศรีธรรมราช</h1><p>ผลการดำเนินงานตามตัวชี้วัด MOU ปีบัญชี 2569</p></div>
+      </div>
+      <div class="actions">
+        <a class="btn btn-light hidden" id="systemFolderBtn" href="https://drive.google.com/drive/folders/1OecHsut_dFN2BOJ2MEI9AOIXnJ4jvY4i?usp=sharing" target="_blank" rel="noopener noreferrer">เปิดโฟลเดอร์ไฟล์</a>
+        <button class="btn btn-light" id="printBtn" type="button">พิมพ์ / PDF</button>
+        <button class="btn btn-light" id="adminBtn" type="button">เข้าสู่ระบบ Admin</button>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="toolbar" aria-label="ตัวกรองข้อมูล">
+      <div class="filters">
+        <div class="field"><label for="periodFilter">งวดข้อมูล</label><select id="periodFilter"></select></div>
+        <div class="field"><label for="centerFilter">ศูนย์</label><select id="centerFilter"><option value="">ทุกศูนย์</option></select></div>
+        <div class="field"><label for="kpiFilter">ตัวชี้วัด</label><select id="kpiFilter"><option value="">ทุกตัวชี้วัด</option></select></div>
+      </div>
+      <div class="statusline"><span id="dataStatus">ข้อมูลตัวอย่างจาก Workbook</span><br><span id="updateStatus"></span></div>
+    </section>
+    <nav class="tabs" aria-label="หมวดหมู่ Dashboard">
+      <button class="tab active" data-tab="overview" type="button">01 · เปรียบเทียบ 8 ตัวชี้วัด</button>
+      <button class="tab" data-tab="ranking" type="button">02 · ผลงานและอันดับ</button>
+      <button class="tab" data-tab="executive" type="button">03 · บทสรุปผู้บริหาร</button>
+    </nav>
+
+    <section class="section active" id="section-overview">
+      <div class="grid grid-4" id="metricCards"></div>
+      <div class="section-title"><div><h2>ผลตัวชี้วัด 8 ข้อ เปรียบเทียบ 3 ศูนย์</h2><p>คะแนนระดับ 1–5 อ้างอิง MOU; กราฟเปรียบเทียบคะแนน ไม่เปรียบเทียบจำนวนผลงานข้ามหน่วยที่ต่างกัน</p></div><span class="chip">Snapshot จากไฟล์ข้อมูลล่าสุดที่มี</span></div>
+      <div class="grid grid-2">
+        <article class="card"><div class="card-head"><div><h3>คะแนนราย KPI แยกศูนย์</h3><p class="card-sub">แกนคะแนน 1–5 · คะแนนถ่วงน้ำหนักใช้จัดอันดับศูนย์</p></div></div><div class="chart-box tall"><canvas id="scoreChart" aria-label="กราฟคะแนน KPI รายศูนย์"></canvas></div></article>
+        <article class="card"><div class="card-head"><div><h3>ระดับคะแนนเฉลี่ยตามตัวชี้วัด</h3><p class="card-sub">ค่าเฉลี่ยคะแนนของศูนย์ที่เลือก ตามตัวกรองปัจจุบัน</p></div></div><div class="chart-box tall"><canvas id="averageChart" aria-label="กราฟระดับคะแนนเฉลี่ย"></canvas></div></article>
+      </div>
+      <article class="card">
+        <div class="card-head"><div><h3>ผลจริงเทียบเป้าหมายรายศูนย์</h3><p class="card-sub">แสดงค่าตามหน่วยของ KPI ที่เลือก; KPI 4–6 แสดงจำนวน/ผลงานที่ดำเนินการจากฐานใน Workbook</p></div></div>
+        <div class="scroll"><table id="kpiTable"></table></div>
+        <p class="table-note">ข้อมูล ณ วันที่ที่แสดงในแต่ละรายการ; KPI 3 ใช้ข้อมูล ณ 31 กรกฎาคม 2569 ขณะที่ KPI อื่นใน Workbook สรุปเป็นข้อมูล ณ 31 สิงหาคม 2569</p>
+      </article>
+    </section>
+
+    <section class="section" id="section-ranking">
+      <div class="section-title"><div><h2>ผลงานและอันดับ</h2><p>จัดอันดับศูนย์จากคะแนนถ่วงน้ำหนักตามน้ำหนัก MOU</p></div></div>
+      <div class="grid grid-2">
+        <article class="card"><div class="card-head"><div><h3>อันดับคะแนนรวมรายศูนย์</h3><p class="card-sub">คะแนนเต็ม 5 · แสดงเฉพาะตัวชี้วัดที่มีคะแนน</p></div></div><div class="scroll"><table id="centerRankTable"></table></div></article>
+        <article class="card"><div class="card-head"><div><h3>ภาพเปรียบเทียบคะแนนรวม</h3><p class="card-sub">คะแนนถ่วงน้ำหนักจากผลที่มีในงวดที่เลือก</p></div></div><div class="chart-box"><canvas id="centerChart" aria-label="กราฟอันดับคะแนนศูนย์"></canvas></div></article>
+      </div>
+      <div class="grid grid-2">
+        <article class="card"><div class="card-head"><div><h3>พนักงานคะแนนสูงสุด 5 อันดับ</h3><p class="card-sub">ต้องมีข้อมูลคะแนนรายบุคคลที่นำเข้าและระบุผู้รับผิดชอบ</p></div></div><div class="scroll"><table id="officerTopTable"></table></div></article>
+        <article class="card"><div class="card-head"><div><h3>พนักงานคะแนนต่ำสุด 5 อันดับ</h3><p class="card-sub">เรียงจากคะแนนถ่วงน้ำหนักต่ำสุด</p></div></div><div class="scroll"><table id="officerBottomTable"></table></div></article>
+      </div>
+      <div class="callout">ไฟล์สรุปตั้งต้นมีคะแนนแยกระดับศูนย์เท่านั้น ไม่พบคะแนนรายบุคคลหรือสาขา จึงยังไม่แสดงอันดับพนักงาน/สาขา การจัดอันดับจะปรากฏเมื่อ Admin นำเข้าข้อมูลที่มีชื่อผู้รับผิดชอบและคะแนน KPI จริงครบตามข้อมูลที่ต้องการใช้</div>
+      <article class="card"><div class="card-head"><div><h3>ตารางคะแนนราย KPI · ศูนย์ / สาขา / พนักงาน</h3><p class="card-sub">ใช้ตัวกรองด้านบนเพื่อดูข้อมูลที่ต้องการ</p></div></div><div class="scroll"><table id="rankingDetailTable"></table></div></article>
+    </section>
+
+    <section class="section" id="section-executive">
+      <div class="section-title"><div><h2>บทสรุปผู้บริหาร</h2><p>สรุปเชิงพรรณนาจาก Snapshot ที่เลือก ไม่ใช้สรุปเหตุและผล</p></div></div>
+      <div class="grid grid-3" id="executiveCards"></div>
+      <div class="insight" id="executiveInsight"></div>
+      <div class="grid grid-2">
+        <article class="card"><div class="card-head"><div><h3>ประเด็นบริหารตามผล KPI</h3><p class="card-sub">แนวทางปฏิบัติที่ควรพิจารณาและติดตาม</p></div></div><div class="action-list" id="actionList"></div></article>
+        <article class="card"><div class="card-head"><div><h3>ข้อมูลประกอบการตีความ</h3></div></div><div class="notice">ข้อมูลนี้เป็น Snapshot เชิงพรรณนาจาก Workbook และไฟล์ที่ Admin นำเข้า ไม่สรุปความสัมพันธ์เชิงเหตุและผล</div><div class="notice">คะแนนเป็นระดับ 1–5 ตามเกณฑ์ MOU และน้ำหนักรวม 100 คะแนน ผล KPI แต่ละข้อมีหน่วยและวันที่ข้อมูลแตกต่างกัน จึงไม่ควรนำจำนวนผลงานต่างหน่วยมาเปรียบเทียบกันโดยตรง</div><div class="notice">ไม่มีข้อมูลผล KPI รายบุคคลในไฟล์สรุปตั้งต้น อันดับพนักงานจะแสดงเมื่อมีการนำเข้าข้อมูลรายบุคคลที่ตรวจสอบแหล่งที่มาแล้วเท่านั้น</div><div class="notice">การเก็บข้อมูลในรุ่น HTML นี้ใช้ Local Storage ของ Browser เครื่องที่เปิดไฟล์ ไม่ได้บันทึกหรือซิงก์ไป Google Sheets/Drive</div></article>
+      </div>
+      <article class="card"><div class="card-head"><div><h3>คะแนน MOU แยกตาม KPI และศูนย์</h3></div></div><div class="scroll"><table id="executiveTable"></table></div></article>
+    </section>
+    <footer class="footer">แหล่งข้อมูลตั้งต้น: สรุปผล_KPI_8_ตัวชี้วัด.xlsx · งวด 2569-08 · คะแนนอ้างอิงเกณฑ์ MOU ปีบัญชี 2569 · ใช้ประกอบการติดตามและพิจารณา โดยตรวจสอบกับเอกสารต้นทางก่อนตัดสินใจ</footer>
+  </main>
+
+  <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-head"><h2 id="modalTitle">ผู้ดูแลระบบ</h2><button class="btn btn-plain" id="closeModal" type="button">ปิด</button></div>
+      <div id="loginForm">
+        <p class="card-sub">เข้าสู่ระบบ Apps Script เพื่อจัดการรายชื่อใน Google Sheets</p>
+        <div class="field"><label for="username">Username</label><input id="username" autocomplete="username" value="admin"></div>
+        <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password"></div>
+        <div class="message" id="loginMessage" role="alert"></div>
+        <button class="btn btn-main" id="loginSubmit" type="button">เข้าสู่ระบบ</button>
+      </div>
+      <div id="passwordChange" class="hidden">
+        <div class="notice">บัญชีเริ่มต้นต้องเปลี่ยนรหัสผ่านก่อนจัดการรายชื่อ รหัสผ่านใหม่ต้องยาวอย่างน้อย 12 ตัวอักษร และประกอบด้วยตัวอักษร ตัวเลข และอักขระพิเศษ</div>
+        <div class="field"><label for="currentPassword">รหัสผ่านปัจจุบัน</label><input id="currentPassword" type="password" autocomplete="current-password"></div>
+        <div class="field"><label for="newPassword">รหัสผ่านใหม่</label><input id="newPassword" type="password" autocomplete="new-password"></div>
+        <div class="field"><label for="confirmPassword">ยืนยันรหัสผ่านใหม่</label><input id="confirmPassword" type="password" autocomplete="new-password"></div>
+        <div class="message" id="passwordMessage" role="alert"></div>
+        <button class="btn btn-main" id="passwordSubmit" type="button">เปลี่ยนรหัสผ่าน</button>
+      </div>
+      <div id="adminTools" class="hidden">
+        <div class="notice">รายการและการแก้ไขถูกอ่าน/บันทึกในชีต Officers ของ Google Sheets ด้วยสิทธิ์ Admin; ช่องทางติดต่อจะแสดงเฉพาะหลังเข้าสู่ระบบ</div>
+        <div class="right-actions">
+          <button class="btn btn-main" id="addOfficerBtn" type="button">＋ เพิ่มพนักงาน</button>
+          <button class="btn btn-soft" id="importRosterBtn" type="button">นำเข้าไฟล์รายชื่อ Excel</button>
+          <button class="btn btn-plain" id="logoutBtn" type="button">ออกจากระบบ</button>
+          <input id="rosterFile" type="file" accept=".xlsx,.xls" class="hidden">
+        </div>
+        <div class="field"><label for="officerSearch">ค้นหาชื่อ / รหัส / สาขา</label><input id="officerSearch" type="search" placeholder="พิมพ์คำค้นหา"></div>
+        <div class="message" id="officerMessage" role="status"></div>
+        <div class="scroll"><table id="officerAdminTable"></table></div>
+        <div id="officerFormWrap" class="notice hidden">
+          <h3 id="officerFormTitle">เพิ่มพนักงาน</h3>
+          <form id="officerForm">
+            <input id="originalEmployeeId" type="hidden">
+            <div class="field"><label for="officerCenter">ศูนย์หลัก *</label><select id="officerCenter" required></select></div>
+            <div class="field"><label for="officerBranch">สาขา / HUB ย่อย *</label><input id="officerBranch" maxlength="150" required></div>
+            <div class="field"><label for="officerEmployeeId">รหัสพนักงาน</label><input id="officerEmployeeId" maxlength="30"></div>
+            <div class="field"><label for="officerName">ชื่อ-สกุลพนักงาน *</label><input id="officerName" maxlength="150" required></div>
+            <div class="field"><label for="officerPosition">ตำแหน่ง</label><input id="officerPosition" maxlength="150"></div>
+            <div class="field"><label for="officerPhone">โทรศัพท์</label><input id="officerPhone" maxlength="50"></div>
+            <div class="field"><label for="officerEmail">อีเมล</label><input id="officerEmail" type="email" maxlength="254"></div>
+            <div class="right-actions"><button class="btn btn-main" id="saveOfficerBtn" type="submit">บันทึก</button><button class="btn btn-plain" id="cancelOfficerBtn" type="button">ยกเลิก</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    const CENTERS=['ศูนย์นครศรีธรรมราช','ศูนย์ท่าศาลา','ศูนย์ทุ่งสง'];
+    const KPIS=[
+      {id:'1',name:'การบริหารจัดการหนี้ NPLs คงเหลือ ณ สิ้นปีบัญชี 2569',weight:30,unit:'ล้านบาท',levels:[1682.16,1609.93,1537.70,1393.54,1249.38],direction:'lower'},
+      {id:'2',name:'การรับชำระดอกเบี้ยที่รับรู้เกณฑ์เงินสด (NA) จากฐาน',weight:15,unit:'ล้านบาท',levels:[25.47,35.03,44.58,54.13,63.68],direction:'higher'},
+      {id:'3',name:'การลดการกันสำรอง',weight:10,unit:'ล้านบาท',levels:[104.52,130.66,156.79,182.92,209.05],direction:'higher'},
+      {id:'4',name:'การรับชำระหนี้ถึงกำหนดในปีบัญชี 2569',weight:10,unit:'ร้อยละ',levels:[40,45,50,55,60],direction:'higher'},
+      {id:'5',name:'การดำเนินการแก้ไขหนี้ขาดอายุความ',weight:10,unit:'ร้อยละ',levels:[80,85,90,95,100],direction:'higher'},
+      {id:'6',name:'การดำเนินการแก้ไขหนี้จะขาดอายุความ',weight:10,unit:'ร้อยละ',levels:[80,85,90,95,100],direction:'higher'},
+      {id:'7',name:'จำหน่ายหนี้เงินกู้ออกจากบัญชีเป็นหนี้สูญ',weight:10,unit:'ราย',levels:[63,95,126,142,157],direction:'higher'},
+      {id:'8',name:'ลดหนี้ดำเนินคดียกมาต้นปี',weight:5,unit:'ล้านบาท',levels:[6,7,8,9,10],direction:'higher'}
+    ];
+    const SEED=[
+      ['ศูนย์นครศรีธรรมราช','1',505.38,785.68,.1236,1,'31 สิงหาคม 2569'],['ศูนย์ท่าศาลา','1',252.72,473.62,.1735,1,'31 สิงหาคม 2569'],['ศูนย์ทุ่งสง','1',491.28,933.86,.2752,1,'31 สิงหาคม 2569'],
+      ['ศูนย์นครศรีธรรมราช','2',23.22,7.92,.3413,1,'31 สิงหาคม 2569'],['ศูนย์ท่าศาลา','2',15.79,5.12,.3245,1,'31 สิงหาคม 2569'],['ศูนย์ทุ่งสง','2',24.67,6.63,.2686,1,'31 สิงหาคม 2569'],
+      ['ศูนย์นครศรีธรรมราช','3',74.92,17.11,.2283,1,'31 กรกฎาคม 2569'],['ศูนย์ท่าศาลา','3',46.31,10.33,.2232,1,'31 กรกฎาคม 2569'],['ศูนย์ทุ่งสง','3',87.82,14.15,.1611,1,'31 กรกฎาคม 2569'],
+      ['ศูนย์นครศรีธรรมราช','4',262.49,50.04,.1906,1,'31 สิงหาคม 2569'],['ศูนย์ท่าศาลา','4',187.2,32.83,.1754,1,'31 สิงหาคม 2569'],['ศูนย์ทุ่งสง','4',289.99,27.76,.0957,1,'31 สิงหาคม 2569'],
+      ['ศูนย์นครศรีธรรมราช','5',7,0,0,1,'31 สิงหาคม 2569'],['ศูนย์ท่าศาลา','5',3,1,.3333,1,'31 สิงหาคม 2569'],['ศูนย์ทุ่งสง','5',17,2,.1176,1,'31 สิงหาคม 2569'],
+      ['ศูนย์นครศรีธรรมราช','6',297,273,.9192,3,'31 สิงหาคม 2569'],['ศูนย์ท่าศาลา','6',406,219,.5394,1,'31 สิงหาคม 2569'],['ศูนย์ทุ่งสง','6',314,202,.6433,1,'31 สิงหาคม 2569'],
+      ['ศูนย์นครศรีธรรมราช','7',54,3,.0556,1,'31 สิงหาคม 2569'],['ศูนย์ท่าศาลา','7',54,1,.0185,1,'31 สิงหาคม 2569'],['ศูนย์ทุ่งสง','7',49,7,.1429,1,'31 สิงหาคม 2569'],
+      ['ศูนย์นครศรีธรรมราช','8',3.09,3.44,.1113,5,'31 สิงหาคม 2569'],['ศูนย์ท่าศาลา','8',2.4,1.83,.0763,2,'31 สิงหาคม 2569'],['ศูนย์ทุ่งสง','8',2.29,1.54,.0674,1,'31 สิงหาคม 2569']
+    ].map(row=>({period:'2569-08',center:row[0],kpi_id:row[1],target:row[2],actual:row[3],reported_rate:row[4],score:row[5],snapshot_date:row[6],branch:'',officer:'',unit:KPIS.find(k=>k.id===row[1]).unit,source:'สรุปผล_KPI_8_ตัวชี้วัด.xlsx'}));
+    const STORAGE_KEY='mouExecutiveDashboard.v1';
+    let rows=loadRows();
+    let charts={};
+    let adminToken=sessionStorage.getItem('mou_admin_token')||'';
+    let adminUsername=sessionStorage.getItem('mou_admin_user')||'';
+    let officers=[];
+    const $=id=>document.getElementById(id);
+    const colors=['#087b55','#3976d2','#eea13a','#8c68ca','#d85b53','#37a8a4','#83af38','#6d8294'];
+    function loadRows(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');return Array.isArray(saved)&&saved.length?saved:SEED.slice();}catch(error){console.warn('ไม่สามารถอ่านข้อมูลเดิมจาก Local Storage',error);return SEED.slice();}}
+    function saveRows(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(rows));return true;}catch(error){return false;}}
+    function fmt(value,digits=2){const n=Number(value);return Number.isFinite(n)?n.toLocaleString('th-TH',{minimumFractionDigits:digits,maximumFractionDigits:digits}):'—';}
+    function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function kpi(id){return KPIS.find(item=>item.id===String(id));}
+    function dataRows(){const period=$('periodFilter').value,center=$('centerFilter').value,selectedKpi=$('kpiFilter').value;return rows.filter(r=>(!period||r.period===period)&&(!center||r.center===center)&&(!selectedKpi||r.kpi_id===selectedKpi));}
+    function currentPeriods(){return [...new Set(rows.map(r=>r.period).filter(Boolean))].sort().reverse();}
+    function setSelectOptions(){const oldPeriod=$('periodFilter').value,oldCenter=$('centerFilter').value,oldKpi=$('kpiFilter').value;const periods=currentPeriods();$('periodFilter').innerHTML=periods.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('')||'<option value="">ไม่มีงวด</option>';if(periods.includes(oldPeriod))$('periodFilter').value=oldPeriod;else if(periods.length)$('periodFilter').value=periods[0];$('centerFilter').innerHTML='<option value="">ทุกศูนย์</option>'+CENTERS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');if(CENTERS.includes(oldCenter))$('centerFilter').value=oldCenter;$('kpiFilter').innerHTML='<option value="">ทุกตัวชี้วัด</option>'+KPIS.map(x=>`<option value="${x.id}">KPI ${x.id} · ${esc(x.name)}</option>`).join('');if(KPIS.some(x=>x.id===oldKpi))$('kpiFilter').value=oldKpi;}
+    function centerScores(input){return CENTERS.map(center=>{const set=input.filter(r=>r.center===center&&Number(r.score)>=1&&Number(r.score)<=5),available=new Set(set.map(r=>r.kpi_id));const totalWeight=KPIS.filter(x=>available.has(x.id)).reduce((sum,x)=>sum+x.weight,0);const weighted=set.reduce((sum,r)=>sum+Number(r.score)*kpi(r.kpi_id).weight,0);return {center,score:totalWeight?weighted/totalWeight:0,count:available.size,weight:totalWeight};}).sort((a,b)=>b.score-a.score);}
+    function byCenterKpi(input,center,id){return input.filter(r=>r.center===center&&r.kpi_id===id);}
+    function avgKpiScores(input){return KPIS.map(x=>{const values=input.filter(r=>r.kpi_id===x.id&&Number(r.score)>0).map(r=>Number(r.score));return values.length?values.reduce((a,b)=>a+b,0)/values.length:null;});}
+    function render(){setSelectOptions();const selected=dataRows();renderCards(selected);renderKpiTable(selected);renderRanking(selected);renderExecutive(selected);renderCharts(selected);$('dataStatus').textContent=`แสดง ${selected.length.toLocaleString('th-TH')} รายการ · ประมวลผลใน Browser`;const savedAt=localStorage.getItem(STORAGE_KEY+'_updated');$('updateStatus').textContent=savedAt?'บันทึกล่าสุด '+savedAt:'ข้อมูลตั้งต้นจาก Workbook';}
+    function renderCards(input){const ranks=centerScores(input);const scored=input.filter(r=>Number(r.score)>=1&&Number(r.score)<=5);const avg=scored.length?scored.reduce((s,r)=>s+Number(r.score),0)/scored.length:0;const top=ranks[0];const cards=[['รายการ KPI ที่แสดง',`${new Set(input.map(r=>r.kpi_id)).size} / 8`,'ข้อมูลตามตัวกรอง'],['คะแนนเฉลี่ยรายรายการ',scored.length?`${fmt(avg,2)} / 5`:'—',`${scored.length} คะแนนที่มีข้อมูล`],['ศูนย์คะแนนนำ',top&&top.score?top.center.replace('ศูนย์',''): '—',top&&top.score?`${fmt(top.score,2)} คะแนนถ่วงน้ำหนัก`:'ยังไม่มีคะแนน'],['ระเบียนข้อมูล',input.length.toLocaleString('th-TH'),'ปรับปรุงและเก็บใน Browser']];$('metricCards').innerHTML=cards.map((c,i)=>`<article class="card metric"><div class="metric-label">${c[0]}</div><div class="metric-value" style="${i===2?'font-size:21px':''}">${esc(c[1])}</div><div class="metric-note">${esc(c[2])}</div></article>`).join('');}
+    function renderKpiTable(input){const ids=$('kpiFilter').value?[ $('kpiFilter').value ]:KPIS.map(x=>x.id);const centers=$('centerFilter').value?[$('centerFilter').value]:CENTERS;let html='<thead><tr><th>KPI</th><th>ตัวชี้วัด</th><th>ศูนย์</th><th class="num">ผลงานจริง</th><th class="num">เป้าหมาย</th><th class="num">ร้อยละ Workbook</th><th class="num">คะแนน</th><th>หน่วย</th><th>ข้อมูล ณ</th></tr></thead><tbody>';let count=0;for(const id of ids){const info=kpi(id);for(const center of centers){const found=byCenterKpi(input,center,id);if(!found.length)continue;for(const r of found){count++;html+=`<tr><td>KPI ${id}</td><td>${esc(info.name)}</td><td>${esc(center)}</td><td class="num">${fmt(r.actual)}</td><td class="num">${fmt(r.target)}</td><td class="num">${Number.isFinite(Number(r.reported_rate))?fmt(Number(r.reported_rate)*100,2)+'%':'—'}</td><td class="num"><span class="heat heat-${Math.round(r.score)}">${esc(r.score)}/5</span></td><td>${esc(r.unit||info.unit)}</td><td>${esc(r.snapshot_date||'—')}</td></tr>`;}}}if(!count)html+='<tr><td class="empty" colspan="9">ไม่พบข้อมูลตามตัวกรอง</td></tr>';html+='</tbody>';$('kpiTable').innerHTML=html;}
+    function rankTable(items){return `<thead><tr><th>อันดับ</th><th>ศูนย์</th><th class="num">คะแนนถ่วงน้ำหนัก / 5</th><th class="num">KPI มีคะแนน</th><th class="num">น้ำหนักที่ครอบคลุม</th></tr></thead><tbody>${items.filter(x=>x.score).length?items.filter(x=>x.score).map((x,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(x.center)}</td><td class="num"><b>${fmt(x.score,2)}</b></td><td class="num">${x.count} / 8</td><td class="num">${x.weight}%</td></tr>`).join(''):'<tr><td class="empty" colspan="5">ไม่มีคะแนนที่ใช้จัดอันดับ</td></tr>'}</tbody>`;}
+    function officerRanks(input){const staff=new Map();for(const r of input){if(!r.officer||!Number(r.score))continue;const key=[r.center,r.branch||'',r.officer].join('|');if(!staff.has(key))staff.set(key,{center:r.center,branch:r.branch||'—',officer:r.officer,scores:new Map()});staff.get(key).scores.set(r.kpi_id,Number(r.score));}return [...staff.values()].filter(x=>x.scores.size===8).map(x=>({...x,score:KPIS.reduce((s,k)=>s+(x.scores.get(k.id)||0)*k.weight,0)/100})).sort((a,b)=>b.score-a.score);}
+    function staffTable(list){return `<thead><tr><th>อันดับ</th><th>พนักงาน</th><th>ศูนย์ / สาขา</th><th class="num">คะแนน / 5</th><th class="num">KPI ครบ</th></tr></thead><tbody>${list.length?list.map((x,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(x.officer)}</td><td>${esc(x.center)} · ${esc(x.branch)}</td><td class="num"><b>${fmt(x.score,2)}</b></td><td class="num">8 / 8</td></tr>`).join(''):'<tr><td class="empty" colspan="5">ยังไม่มีข้อมูลคะแนนพนักงานรายบุคคลครบ 8 KPI</td></tr>'}</tbody>`;}
+    function renderRanking(input){const ranks=centerScores(input);$('centerRankTable').innerHTML=rankTable(ranks);const period=$('periodFilter').value,center=$('centerFilter').value;const staffRows=rows.filter(r=>(!period||r.period===period)&&(!center||r.center===center));const complete=officerRanks(staffRows);$('officerTopTable').innerHTML=staffTable(complete.slice(0,5));$('officerBottomTable').innerHTML=staffTable(complete.slice(-5).reverse());let html='<thead><tr><th>ศูนย์</th><th>KPI</th><th>ตัวชี้วัด</th><th class="num">คะแนน</th><th>สาขา</th><th>พนักงาน</th></tr></thead><tbody>';const details=input.filter(r=>Number(r.score)>=1&&Number(r.score)<=5).sort((a,b)=>a.center.localeCompare(b.center,'th')||Number(a.kpi_id)-Number(b.kpi_id));html+=details.length?details.map(r=>`<tr><td>${esc(r.center)}</td><td>KPI ${esc(r.kpi_id)}</td><td>${esc(kpi(r.kpi_id).name)}</td><td class="num"><span class="heat heat-${Math.round(r.score)}">${esc(r.score)}/5</span></td><td>${esc(r.branch||'—')}</td><td>${esc(r.officer||'—')}</td></tr>`).join(''):'<tr><td class="empty" colspan="6">ไม่มีข้อมูล</td></tr>';$('rankingDetailTable').innerHTML=html+'</tbody>';}
+    function renderExecutive(input){const ranks=centerScores(input),scored=input.filter(r=>Number(r.score)>0),avg=scored.length?scored.reduce((a,r)=>a+Number(r.score),0)/scored.length:0,leaders=ranks.filter(x=>x.score);const best=ranks[0],low=KPIS.map(x=>{const scores=input.filter(r=>r.kpi_id===x.id&&Number(r.score)>0).map(r=>Number(r.score));return {kpi:x,avg:scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:null};}).filter(x=>x.avg!==null).sort((a,b)=>a.avg-b.avg);const tiles=[['คะแนนเฉลี่ยรายการ KPI',`${fmt(avg,2)} / 5`],['ศูนย์คะแนนสูงสุด',best&&best.score?`${best.center} · ${fmt(best.score,2)}`:'ไม่มีข้อมูล'],['ศูนย์ที่มีผลคะแนน',`${leaders.length} / 3`]];$('executiveCards').innerHTML=tiles.map(t=>`<div class="card metric"><div class="metric-label">${t[0]}</div><div class="metric-value" style="font-size:20px">${esc(t[1])}</div></div>`).join('');$('executiveInsight').innerHTML=`<strong>สาระสำคัญ:</strong> พบ ${scored.length} ระเบียนคะแนนในข้อมูลที่เลือก จาก 8 ตัวชี้วัดและ ${leaders.length} ศูนย์ที่มีคะแนนตามตัวกรอง คะแนนถ่วงน้ำหนักสูงสุดในข้อมูลนี้คือ ${best&&best.score?esc(best.center)+' ('+fmt(best.score,2)+' จาก 5)':'ยังไม่มีข้อมูล'}; ตัวชี้วัดที่มีคะแนนเฉลี่ยต่ำสุดคือ ${low.length?'KPI '+esc(low[0].kpi.id)+' · '+esc(low[0].kpi.name)+' ('+fmt(low[0].avg,2)+' จาก 5)':'ยังไม่มีข้อมูล'} การตีความเป็นการเปรียบเทียบ Snapshot เท่านั้น`;$('actionList').innerHTML=[['จัดทำแผนติดตามราย KPI','ให้แต่ละศูนย์ทบทวนรายการงานที่ค้างและแนวโน้มเทียบเป้าหมายของ KPI ที่คะแนนต่ำ โดยยืนยันยอดกับระบบต้นทางก่อนกำหนดมาตรการ'],['จัดลำดับความสำคัญของแฟ้มลูกหนี้','กำหนดเจ้าของงาน วันติดตาม และสถานะถัดไปสำหรับรายการ NPL/หนี้ดำเนินคดี โดยใช้ข้อมูลบัญชีและข้อกฎหมายที่ตรวจสอบแล้ว'],['กำกับการรับชำระและการแก้ไขหนี้','ทบทวนกลุ่มเป้าหมายของ KPI 2, 4, 5 และ 6 เป็นรอบ พร้อมบันทึกหลักฐานรับชำระหรือการดำเนินการในระบบที่เกี่ยวข้อง'],['ติดตามผลแบบรายงวดและคุณภาพข้อมูล','กำหนดวันปิดข้อมูลเดียวกัน ตรวจหน่วย วันที่ Snapshot และความครบถ้วนของคะแนนก่อนประชุมบริหาร เพื่อให้เทียบผลได้อย่างเป็นธรรม'],['จัดทำข้อมูลผลงานรายบุคคลก่อนจัดอันดับ','นำเข้าผลที่ระบุผู้รับผิดชอบจริง พร้อมคะแนนทั้ง 8 KPI และทบทวนความถูกต้องโดยผู้บังคับบัญชา ก่อนเผยแพร่ตารางอันดับพนักงาน']].map(x=>`<div class="action"><div><strong>${esc(x[0])}</strong><span>${esc(x[1])}</span></div></div>`).join('');$('executiveTable').innerHTML=$('kpiTable').innerHTML;}
+    function killChart(key){if(charts[key]){charts[key].destroy();delete charts[key];}}
+    function renderCharts(input){if(!window.Chart)return;const selectedKpis=$('kpiFilter').value?KPIS.filter(x=>x.id===$('kpiFilter').value):KPIS;const selectedCenters=$('centerFilter').value?[$('centerFilter').value]:CENTERS;const scoreSets=selectedCenters.map((center,i)=>({label:center.replace('ศูนย์',''),data:selectedKpis.map(x=>{const found=byCenterKpi(input,center,x.id)[0];return found?Number(found.score):null;}),backgroundColor:colors[CENTERS.indexOf(center)],borderRadius:5}));killChart('score');charts.score=new Chart($('scoreChart'),{type:'bar',data:{labels:selectedKpis.map(x=>'KPI '+x.id),datasets:scoreSets},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{position:'bottom',labels:{font:{family:'Sarabun'}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw??'ไม่มีข้อมูล'} คะแนน`}}},scales:{x:{min:0,max:5,ticks:{stepSize:1},grid:{color:'#edf2ef'}},y:{grid:{display:false}}}}});const averages=selectedKpis.map(x=>{const values=input.filter(r=>r.kpi_id===x.id&&Number(r.score)>0).map(r=>Number(r.score));return values.length?values.reduce((a,b)=>a+b,0)/values.length:null;});killChart('average');charts.average=new Chart($('averageChart'),{type:'bar',data:{labels:selectedKpis.map(x=>'KPI '+x.id),datasets:[{label:'คะแนนเฉลี่ย',data:averages,backgroundColor:averages.map(v=>v===null?'#e7eee9':v<2?'#e98373':v<3?'#f0bd63':'#5cb786'),borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?'ไม่มีคะแนน':`${fmt(c.raw,2)} / 5`}}},scales:{x:{min:0,max:5,ticks:{stepSize:1},grid:{color:'#edf2ef'}},y:{grid:{display:false}}}}});const ranks=centerScores(input).filter(x=>x.score);killChart('center');charts.center=new Chart($('centerChart'),{type:'bar',data:{labels:ranks.map(x=>x.center),datasets:[{label:'คะแนนถ่วงน้ำหนัก',data:ranks.map(x=>x.score),backgroundColor:ranks.map(x=>colors[CENTERS.indexOf(x.center)]),borderRadius:7}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${fmt(c.raw,2)} / 5`}}},scales:{x:{min:0,max:5,ticks:{stepSize:1}},y:{grid:{display:false}}}}});}
+    function gasCall(name,...args){if(!window.google||!google.script||!google.script.run)return Promise.reject(new Error('การบันทึก Google Sheets ต้องเปิด Dashboard จาก URL ของ Apps Script Web App ไม่ใช่ไฟล์ในเครื่อง'));return new Promise((resolve,reject)=>google.script.run.withSuccessHandler(resolve).withFailureHandler(error=>reject(new Error(error&&error.message||'เชื่อมต่อ Google Sheets ไม่สำเร็จ')))[name](...args));}
+    function showAdminView(view){$('loginForm').classList.toggle('hidden',view!=='login');$('passwordChange').classList.toggle('hidden',view!=='password');$('adminTools').classList.toggle('hidden',view!=='tools');}
+    async function openAdmin(){ $('adminModal').classList.add('open');$('loginMessage').textContent='';$('officerMessage').textContent='';if(adminToken){try{await loadOfficers();showAdminView('tools');$('systemFolderBtn').classList.remove('hidden');}catch(error){adminToken='';sessionStorage.removeItem('mou_admin_token');$('systemFolderBtn').classList.add('hidden');showAdminView('login');$('loginMessage').textContent=error.message;}}else showAdminView('login');}
+    function closeAdmin(){ $('adminModal').classList.remove('open');}
+    async function login(){ $('loginMessage').textContent='';$('loginSubmit').disabled=true;try{const result=await gasCall('apiLogin',$('username').value.trim(),$('password').value);if(!result||!result.ok)throw new Error(result&&result.error||'เข้าสู่ระบบไม่สำเร็จ');adminToken=result.token;adminUsername=result.username;sessionStorage.setItem('mou_admin_token',adminToken);sessionStorage.setItem('mou_admin_user',adminUsername);$('password').value='';if(result.mustChangePassword){$('currentPassword').value='';showAdminView('password');return;}await loadOfficers();showAdminView('tools');$('systemFolderBtn').classList.remove('hidden');$('adminBtn').textContent='จัดการรายชื่อ · '+adminUsername;}catch(error){adminToken='';sessionStorage.removeItem('mou_admin_token');sessionStorage.removeItem('mou_admin_user');$('systemFolderBtn').classList.add('hidden');showAdminView('login');$('loginMessage').textContent=error.message;}finally{$('loginSubmit').disabled=false;}}
+    async function changeAdminPassword(){ $('passwordMessage').textContent='';if($('newPassword').value!==$('confirmPassword').value){$('passwordMessage').textContent='รหัสผ่านใหม่และการยืนยันไม่ตรงกัน';return;}const button=$('passwordSubmit');button.disabled=true;try{const result=await gasCall('apiChangePassword',adminToken,$('currentPassword').value,$('newPassword').value);adminToken=result.token;sessionStorage.setItem('mou_admin_token',adminToken);$('currentPassword').value='';$('newPassword').value='';$('confirmPassword').value='';await loadOfficers();showAdminView('tools');$('systemFolderBtn').classList.remove('hidden');$('adminBtn').textContent='จัดการรายชื่อ · '+adminUsername;}catch(error){$('passwordMessage').textContent=error.message;}finally{button.disabled=false;}}
+    async function logout(){if(adminToken){try{await gasCall('apiLogout',adminToken);}catch(error){console.warn('ออกจากระบบฝั่ง Apps Script ไม่สำเร็จ',error);}}adminToken='';adminUsername='';officers=[];sessionStorage.removeItem('mou_admin_token');sessionStorage.removeItem('mou_admin_user');$('systemFolderBtn').classList.add('hidden');$('adminBtn').textContent='เข้าสู่ระบบ Admin';$('officerAdminTable').innerHTML='';showAdminView('login');closeAdmin();}
+    async function loadOfficers(){if(!adminToken)return;const response=await gasCall('apiListOfficers',adminToken);if(!response||!response.ok)throw new Error('ไม่สามารถโหลดรายชื่อจากชีต Officers ได้');officers=response.officers||[];renderOfficerAdminTable();}
+    function renderOfficerAdminTable(){const query=$('officerSearch').value.trim().toLocaleLowerCase('th');const matches=officers.filter(o=>[o.employee_id,o.officer_name,o.center,o.branch,o.position].join(' ').toLocaleLowerCase('th').includes(query));let html='<thead><tr><th>รหัสพนักงาน</th><th>ชื่อ-สกุล</th><th>ศูนย์</th><th>สาขา / HUB</th><th>ตำแหน่ง</th><th>โทรศัพท์</th><th>อีเมล</th><th>จัดการ</th></tr></thead><tbody>';html+=matches.length?matches.map(o=>`<tr><td>${esc(o.employee_id||'—')}</td><td>${esc(o.officer_name)}</td><td>${esc(o.center)}</td><td>${esc(o.branch)}</td><td>${esc(o.position||'—')}</td><td>${esc(o.phone||'—')}</td><td>${esc(o.email||'—')}</td><td><button class="btn btn-soft btn-small edit-officer" type="button" data-id="${esc(o.officer_id||'')}">แก้ไข</button></td></tr>`).join(''):'<tr><td class="empty" colspan="8">ไม่พบรายชื่อพนักงานในชีต Officers</td></tr>';html+='</tbody>';$('officerAdminTable').innerHTML=html;}
+    function openOfficerForm(record){$('officerForm').reset();$('officerFormWrap').classList.remove('hidden');$('officerCenter').innerHTML=CENTERS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('originalEmployeeId').value=record?record.officer_id||'':'';$('officerFormTitle').textContent=record?'แก้ไขข้อมูลพนักงาน':'เพิ่มพนักงาน';if(record){$('officerCenter').value=record.center||CENTERS[0];$('officerBranch').value=record.branch||'';$('officerEmployeeId').value=record.employee_id||'';$('officerEmployeeId').readOnly=true;$('officerName').value=record.officer_name||'';$('officerPosition').value=record.position||'';$('officerPhone').value=record.phone||'';$('officerEmail').value=record.email||'';}else{$('officerEmployeeId').readOnly=false;$('officerCenter').value=CENTERS[0];}$('officerFormWrap').scrollIntoView({behavior:'smooth',block:'nearest'});}
+    async function saveOfficer(event){event.preventDefault();if(!adminToken)return;const button=$('saveOfficerBtn');button.disabled=true;$('officerMessage').textContent='กำลังบันทึกลง Google Sheets...';const record={officer_id:$('originalEmployeeId').value,center:$('officerCenter').value,branch:$('officerBranch').value.trim(),employee_id:$('officerEmployeeId').value.trim(),officer_name:$('officerName').value.trim(),position:$('officerPosition').value.trim(),phone:$('officerPhone').value.trim(),email:$('officerEmail').value.trim()};try{const result=await gasCall('apiSaveOfficer',adminToken,record);$('officerMessage').textContent=result.message||'บันทึกข้อมูลเรียบร้อยแล้ว';$('officerFormWrap').classList.add('hidden');await loadOfficers();}catch(error){$('officerMessage').textContent='บันทึกไม่สำเร็จ: '+error.message;}finally{button.disabled=false;}}
+    function mapRosterLocation(hub){const value=String(hub||'').replace(/\u00a0/g,' ').trim();const match=value.match(/^HUB\s*([123])(?:\s+|$)(.*)$/i);if(match){const map={'1':'ศูนย์ท่าศาลา','2':'ศูนย์ทุ่งสง','3':'ศูนย์นครศรีธรรมราช'};return{center:map[match[1]],branch:(match[2]||'HUB '+match[1]).trim()};}if(/เขตนครศรีธรรมราช|นครศรีธรรมราช/i.test(value))return{center:'ศูนย์นครศรีธรรมราช',branch:'สำนักงานเขตนครศรีธรรมราช'};throw new Error('ไม่สามารถจับคู่ HUB/ศูนย์จากช่อง "'+value+'" ได้');}
+    async function parseRoster(file){if(!window.XLSX)throw new Error('ไม่พบ SheetJS กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่');const workbook=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true});let records=[];for(const sheetName of workbook.SheetNames){const matrix=XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{header:1,defval:'',raw:true});const headerIndex=matrix.findIndex(row=>row.some(v=>headerKey(v)==='รหัสพนักงาน')&&row.some(v=>headerKey(v)==='ชื่อสกุล'));if(headerIndex<0)continue;const headers=matrix[headerIndex].map(headerKey),column=aliases=>headers.findIndex(h=>aliases.includes(h));const ix={employee_id:column(['รหัสพนักงาน']),officer_name:column(['ชื่อสกุล','ชื่อพนักงาน']),position:column(['ตำแหน่ง']),branch:column(['hub','สาขา']),phone:column(['โทร','เบอร์โทรศัพท์']),email:column(['email','อีเมล'])};if(ix.employee_id<0||ix.officer_name<0||ix.branch<0)throw new Error('ตารางรายชื่อขาดคอลัมน์รหัสพนักงาน/ชื่อ/HUB');for(const row of matrix.slice(headerIndex+1)){const name=String(row[ix.officer_name]||'').replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();if(!name)continue;const location=mapRosterLocation(row[ix.branch]);records.push({employee_id:String(row[ix.employee_id]??'').trim(),officer_name:name,position:String(row[ix.position]||'').trim(),center:location.center,branch:location.branch,phone:String(row[ix.phone]||'').trim(),email:String(row[ix.email]||'').trim()});}break;}if(!records.length)throw new Error('ไม่พบตารางรายชื่อที่มีหัวคอลัมน์รหัสพนักงาน, ชื่อ - สกุล และ HUB');const ids=records.filter(r=>r.employee_id).map(r=>r.employee_id);if(new Set(ids).size!==ids.length)throw new Error('พบรหัสพนักงานซ้ำในไฟล์ กรุณาตรวจสอบก่อนนำเข้า');return records;}
+    async function importRoster(){if(!adminToken)return;const file=$('rosterFile').files[0];if(!file){$('officerMessage').textContent='กรุณาเลือกไฟล์รายชื่อก่อน';return;}const button=$('importRosterBtn');button.disabled=true;$('officerMessage').textContent='กำลังอ่านไฟล์รายชื่อ...';try{const records=await parseRoster(file);$('officerMessage').textContent=`ตรวจสอบผ่าน ${records.length} รายชื่อ กำลังบันทึกลงชีต Officers...`;const result=await gasCall('apiImportOfficers',adminToken,records);$('officerMessage').textContent=`บันทึกรายชื่อแล้ว: เพิ่ม ${result.inserted} รายการ, ปรับปรุง ${result.updated} รายการใน Google Sheets`;await loadOfficers();$('rosterFile').value='';}catch(error){$('officerMessage').textContent='นำเข้าไม่สำเร็จ: '+error.message;}finally{button.disabled=false;}}
+    function normalizeCenter(value,index){const text=String(value||'').trim();if(CENTERS.includes(text))return text;if(/นครศรีธรรมราช|นครศรี|Nakhon/i.test(text))return CENTERS[0];if(/ท่าศาลา|Thasala/i.test(text))return CENTERS[1];if(/ทุ่งสง|Thungsong/i.test(text))return CENTERS[2];if(/เธจเธน|Ã|�/.test(text))return CENTERS[index]||'';return text;}
+    function numeric(value){if(typeof value==='number')return Number.isFinite(value)?value:null;const s=String(value??'').replace(/,/g,'').replace(/%/g,'').trim();if(!s)return null;const n=Number(s);return Number.isFinite(n)?n:null;}
+    function periodFrom(value){const s=String(value||'').trim();if(/^\d{4}-\d{2}$/.test(s))return s;const m=s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/);if(m)return `${m[3].length===2?'25'+m[3]:m[3]}-${m[2].padStart(2,'0')}`;const thaiMonths=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];const index=thaiMonths.findIndex(x=>s.includes(x));const year=s.match(/25\d{2}|20\d{2}/);return index>=0&&year?`${year[0]}-${String(index+1).padStart(2,'0')}`:'2569-08';}
+    function scoreFor(r){const cfg=kpi(r.kpi_id),id=String(r.kpi_id),actual=Number(r.actual),target=Number(r.target),rate=Number(r.reported_rate);if(id==='1'){const levels=cfg.levels.map(x=>x*target/cfg.levels[4]);for(let i=4;i>=0;i--)if(actual<=levels[i])return i+1;return 1;}if(['2','3','7'].includes(id)){const levels=cfg.levels.map(x=>x*target/cfg.levels[4]);let score=1;levels.forEach((v,i)=>{if(actual>=v)score=i+1;});return Math.max(1,Math.min(5,score));}if(id==='4'){let score=1;[40,45,50,55,60].forEach((v,i)=>{if(rate*100>=v)score=i+1;});return score;}if(id==='5'||id==='6'){let score=1;cfg.levels.forEach((v,i)=>{if(rate*100>=v)score=i+1;});return score;}if(id==='8'){const value=actual/target*cfg.levels[4];let score=1;cfg.levels.forEach((v,i)=>{if(value>=v)score=i+1;});return score;}return 1;}
+    async function readSummaryWorkbook(file){
+      if(!window.XLSX)throw new Error('โหลด SheetJS ไม่สำเร็จ กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วเปิดไฟล์ใหม่');
+      const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true});
+      if(!wb.SheetNames.some(x=>/^KPI0?[1-8]$/i.test(x)))return null;
+      const out=[];
+      let latestPeriod='';
+      for(let id=1;id<=8;id++){
+        const sheetName=wb.SheetNames.find(x=>new RegExp(`^KPI0?${id}$`,'i').test(x));
+        if(!sheetName)throw new Error(`ไม่พบชีต KPI${String(id).padStart(2,'0')}`);
+        const matrix=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:'',raw:true});
+        const date=matrix.flat().find(v=>typeof v==='string'&&/31\s*(กรกฎาคม|สิงหาคม)/.test(v))||(id===3?'31 กรกฎาคม 2569':'31 สิงหาคม 2569');
+        const period=periodFrom(date);
+        if(period>latestPeriod)latestPeriod=period;
+        for(let i=2;i<5;i++){
+          const row=matrix[i]||[];
+          const center=normalizeCenter(row[0],i-2);
+          const value=numeric(row[2]);
+          const rateRaw=numeric(row[4]);
+          const note=String(row[5]||'');
+          const match=note.replace(/,/g,'').match(/(?:เป้าหมาย|ตั้งฐาน)\s*([0-9]+(?:\.[0-9]+)?)/);
+          const target=match?Number(match[1]):null;
+          if(!center||value===null||rateRaw===null||!target||target<=0)throw new Error(`${sheetName}: ข้อมูลแถวศูนย์ไม่ครบหรืออ่านชื่อศูนย์ไม่ได้`);
+          const actual=[4,5,6].includes(id)?target-value:value;
+          if(actual<0)throw new Error(`${sheetName}: ผลงานที่คำนวณได้ติดลบ`);
+          const item={period,snapshot_date:date,center,branch:'',officer:'',kpi_id:String(id),target,actual,reported_rate:rateRaw>1?rateRaw/100:rateRaw,unit:KPIS[id-1].unit,source:file.name};
+          item.score=scoreFor(item);
+          out.push(item);
+        }
+      }
+      if(out.length!==24)throw new Error('ข้อมูลสรุปต้องมี 24 รายการ (8 KPI × 3 ศูนย์)');
+      out.forEach(item=>item.period=latestPeriod);
+      return out;
+    }
+    function headerKey(value){return String(value||'').trim().toLowerCase().replace(/[\s_\-./()]/g,'');}
+    document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===`section-${button.dataset.tab}`));}));
+    ['periodFilter','centerFilter','kpiFilter'].forEach(id=>$(id).addEventListener('change',render));
+    $('adminBtn').addEventListener('click',openAdmin);$('closeModal').addEventListener('click',closeAdmin);$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))closeAdmin();});$('loginSubmit').addEventListener('click',login);$('password').addEventListener('keydown',e=>{if(e.key==='Enter')login();});$('passwordSubmit').addEventListener('click',changeAdminPassword);$('logoutBtn').addEventListener('click',logout);$('addOfficerBtn').addEventListener('click',()=>openOfficerForm(null));$('cancelOfficerBtn').addEventListener('click',()=>$('officerFormWrap').classList.add('hidden'));$('officerForm').addEventListener('submit',saveOfficer);$('importRosterBtn').addEventListener('click',()=>$('rosterFile').click());$('rosterFile').addEventListener('change',importRoster);$('officerSearch').addEventListener('input',renderOfficerAdminTable);$('officerAdminTable').addEventListener('click',event=>{const button=event.target.closest('.edit-officer');if(button){const record=officers.find(o=>String(o.officer_id||'')===button.dataset.id);if(record)openOfficerForm(record);}});$('printBtn').addEventListener('click',()=>window.print());
+    if(!localStorage.getItem(STORAGE_KEY)&&!saveRows())console.warn('ไม่สามารถบันทึกข้อมูลเริ่มต้นลง Local Storage ได้');
+    render();
+  </script>
+</body>
+</html>
